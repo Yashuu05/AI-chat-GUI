@@ -60,7 +60,6 @@ AI Chat GUI/
 
 ```
 
-
 ---
 
 ## 🏁 Conclusion
@@ -72,5 +71,13 @@ This project is a reflection of my growth in Python — from basic syntax to bui
 - Create something I can proudly showcase in my portfolio
 
 > Feel free to fork, learn from, and improve this project. Enjoy coding!
+
+---
+
+## Important Links
+- (https://elevenlabs.io/docs/quickstart)
+- (https://github.com/ollama/ollama-python)
+- (https://ollama.com/)
+- (https://cloud.mongodb.com/)
 
 ---
