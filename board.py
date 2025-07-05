@@ -25,7 +25,7 @@ client_labs = ElevenLabs(
     api_key=os.getenv("ELEVENLABS_API_KEY")
 )
 
-latest_ai_response = [""] # --- --- ---  ---- --- ---- --- 
+latest_ai_response = [""] # list to store AI response for TTS
 # ---------------------------------------------------
 def window_of_dashboard(parent_window):
     # create window c
