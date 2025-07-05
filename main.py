@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from pymongo.errors import ConnectionFailure
 import os
-import dashboard
+import board
 # -------------------------------------------------------------------------
 # database connection 
 # load data from .env file
@@ -48,8 +48,10 @@ def login():
             messagebox.showinfo('info','login successful')
             username_entry.delete(0, tk.END)
             password_entry.delete(0, tk.END)
+            # withdraw the login window
+            root.withdraw()
             # open password manager window
-            dashboard.dashboard_window()
+            board.window_of_dashboard(root)
         elif username == '' and password == '':
             messagebox.showerror('Error','Enter Credentials to proceed')
         else:
