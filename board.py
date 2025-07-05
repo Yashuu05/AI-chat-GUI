@@ -9,6 +9,9 @@ import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import threading
+from elevenlabs import play
+from elevenlabs.client import ElevenLabs
+
 
 load_dotenv()
 mongo_uri = os.getenv("MONGO_URI")
@@ -16,6 +19,14 @@ client = MongoClient(mongo_uri)
 db = client["AIChat"]
 # collection for name
 name_collection = db['users_name'] 
+# empty list to store the AI output:
+latest_ai_response = [""]  
+
+# load eleven labs api key 
+client_labs = ElevenLabs(
+    api_key=os.getenv("ELEVENLABS_API_KEY")
+)
+
 # ---------------------------------------------------
 def window_of_dashboard(parent_window):
     # create window c
@@ -75,6 +86,9 @@ def window_of_dashboard(parent_window):
             # main logic for AI streaming (connect to ollama)
             def stream_response():
                 try:
+                    # initiallize the list with empty string
+                    latest_ai_response[0] = ''
+
                     stream = chat(
                         model='gemma3:1b', # model name
                         messages = [{'role':'user','content':user_input}], 
@@ -83,6 +97,7 @@ def window_of_dashboard(parent_window):
                     for chunk in stream:
                         content = chunk['message']['content']
                         chat_display.after(0, append_response, content)
+                        latest_ai_response += content # append each word to the list to store complete AI output.
                 except Exception as e:
                     chat_display.after(0, append_response, f"\n[Error: {str(e)}]\n")
             # start threading to run AI's response text by text
@@ -95,6 +110,23 @@ def window_of_dashboard(parent_window):
             chat_display.config(state='disabled')
             chat_display.see(tk.END)
 
+    # function for TTS
+    def speak():
+        text = latest_ai_response[0]
+        if not text.strip():
+            messagebox.showerror('Error','No AI response available to speak')
+        else:
+            try:
+                audio = client_labs.text_to_speech.convert(
+                    text = text,
+                    voice_id='JBFqnCBsd6RMkjVDRZzb',
+                    model_id= 'eleven_multilingual_v2',
+                    output_format= 'mp3_44100_128'
+                )
+
+                play(audio)
+            except Exception as e:
+                messagebox.showerror('TTS Error', str(e))
     # -----------------------------------------------------------------------------------------------------------------------
     # widgets for dashboard
     # heading
@@ -133,3 +165,7 @@ def window_of_dashboard(parent_window):
     # clear user's prompt
     clear_user_input = tk.Button(window, text='clear prompt', command=clear_input, font=('Arial',10,'bold'), bg='#FCFFC1', width=15)
     clear_user_input.grid(row=3, column=1)
+
+    # TTS button
+    speack_btn = tk.Button(window, text='Speak', command=speak, font=('Arial',10,'bold'), width=15, bg='#2F58CD', fg='white')
+    speack_btn.grid(row=3, column=2)

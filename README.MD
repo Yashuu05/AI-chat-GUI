@@ -17,5 +17,4 @@ Features :
     - TTS button
 3. Settings
     - change password and username
-    - change AI model
 """
